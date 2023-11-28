@@ -41,7 +41,8 @@ CMD="python $MAIN_DIR/codegeex/benchmark/humaneval-x/evaluate_humaneval_x.py \
     --n_workers $N_WORKERS \
     --tmp_dir $MAIN_DIR/codegeex/benchmark/humaneval-x/ \
     --problem_file $DATA_DIR \
-    --timeout $TIMEOUT"
+    --timeout $TIMEOUT \
+    --drop-prompt"
 
 echo "$CMD"
 eval "$CMD"

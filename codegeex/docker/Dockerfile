@@ -1,10 +1,11 @@
-FROM pytorch/pytorch:1.11.0-cuda11.3-cudnn8-runtime
-
+#FROM pytorch/pytorch:1.11.0-cuda11.3-cudnn8-runtime
+FROM pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime
+ARG DEBIAN_FRONTEND=noninteractive
 RUN cp /etc/apt/sources.list /etc/apt/sources.list.bak \
     && sed -i "s@http://.*archive.ubuntu.com@https://mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list \
     && sed -i "s@http://.*security.ubuntu.com@https://mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list \
     && pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
-    && apt-get update && apt-get install -y curl npm git nano \
+    && apt-get -y update && apt-get install -y -qq curl npm git nano \
     && pip install fire zmq transformers tokenizers \
     && mkdir /workspace/download
 
@@ -18,17 +19,17 @@ RUN curl -o /workspace/download/node.tar.gz -SL https://nodejs.org/download/rele
 ENV PATH=/usr/local/lib/nodejs/node/bin:$PATH
 ENV NODE_PATH=/usr/local/lib/node_modules
 
-RUN apt-get install -y build-essential && apt-get install -y g++ \
-    && curl -o /workspace/download/boost_1_71_0.tar.gz -SL https://boostorg.jfrog.io/artifactory/main/release/1.71.0/source/boost_1_71_0.tar.gz \
-    && tar -zxf /workspace/download/boost_1_71_0.tar.gz && rm /workspace/download/boost_1_71_0.tar.gz && cd boost_1_71_0 \
+RUN apt-get install -y -qq build-essential && apt-get install -y -qq g++ \
+   && curl -o /workspace/download/boost_1_83_0.tar.gz -SL https://boostorg.jfrog.io/artifactory/main/release/1.83.0/source/boost_1_83_0.tar.gz \
+    && tar -zxf /workspace/download/boost_1_83_0.tar.gz && rm /workspace/download/boost_1_83_0.tar.gz && cd boost_1_83_0 \
     && ./bootstrap.sh --prefix=/usr/ && ./b2 && ./b2 install \
-    && cd .. && rm -r boost_1_71_0
+    && cd .. && rm -r boost_1_83_0
 RUN curl -o /workspace/download/openssl.tar.gz -SL https://www.openssl.org/source/old/3.0/openssl-3.0.0.tar.gz \
     && tar -zxf /workspace/download/openssl.tar.gz && cd openssl-3.0.0 && ./Configure && make && make install \
     && rm /workspace/download/openssl.tar.gz && rm -r /workspace/openssl-3.0.0
 ENV PATH=/usr/bin/openssl:$PATH
 
-RUN curl -o /workspace/download/jdk.tar.gz -SL https://download.oracle.com/java/20/latest/jdk-20_linux-x64_bin.tar.gz \
+RUN curl -o /workspace/download/jdk.tar.gz -SL https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.tar.gz \
     && mkdir /usr/java && tar -zxf /workspace/download/jdk.tar.gz -C /usr/java && rm /workspace/download/jdk.tar.gz \
     && java_path=`ls /usr/java/${path}` && echo "export JAVA_HOME=/usr/java/${java_path}" >> ~/.profile
 

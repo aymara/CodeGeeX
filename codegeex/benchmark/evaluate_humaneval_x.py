@@ -106,7 +106,8 @@ def evaluate_functional_correctness(
         k: List[int] = [1, 10, 100],
         test_groundtruth: bool = False,
         example_test: bool = False,
-):
+        drop_prompt: bool = False,
+        ):
     if example_test:
         print("Example test...")
 
@@ -148,7 +149,10 @@ def evaluate_functional_correctness(
                 if lang == "javascript":
                     lang = "js"
                 tmp_dir_ = os.path.join(tmp_dir, lang, "evaluation")
-                sample["generation"] = sample["canonical_solution"]
+                generation = sample["canonical_solution"]
+                if drop_prompt:
+                    generation = generation.replace(sample["prompt"], "")
+                sample["generation"] = generation
                 sample["test_code"] = process_humaneval_test(sample, problems, example_test)
                 if sample["test_code"] is None:
                     continue
