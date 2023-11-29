@@ -112,7 +112,7 @@ def evaluate_functional_correctness(
         drop_prompt: bool = False,
 ):
     if example_test:
-        print("Example test...")
+        print("Example test...", file=sys.stderr)
 
     problems = read_dataset(problem_file,
                             dataset_type="humaneval")
@@ -126,8 +126,10 @@ def evaluate_functional_correctness(
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
         out_file = os.path.join(out_dir, input_file.split('/')[-1].replace(".jsonl", suffix))
+        result_file = os.path.join(out_dir, input_file.split('/')[-1].replace(".jsonl", ".result.json"))
     else:
         out_file = os.path.join(input_file.replace(".jsonl", suffix))
+        result_file = os.path.join(input_file.replace(".jsonl", ".result.json"))
 
     if "/codegeex/benchmark/humaneval-x/" in input_file:
         test_groundtruth = True
@@ -145,7 +147,7 @@ def evaluate_functional_correctness(
         results = defaultdict(list)
 
         if test_groundtruth:
-            print("Testing ground truth...")
+            print("Testing ground truth...", file=sys.stderr)
             for sample in tqdm(problems.values()):
                 task_id = sample["task_id"]
                 lang = task_id.split("/")[0].lower()
@@ -165,7 +167,7 @@ def evaluate_functional_correctness(
                 completion_id[task_id] += 1
                 n_samples += 1
         else:
-            print("Reading samples...")
+            print("Reading samples...", file=sys.stderr)
             for sample in tqdm(sample_jsonl):
                 task_id = sample["task_id"]
                 lang = task_id.split("/")[0].lower()
@@ -195,13 +197,13 @@ def evaluate_functional_correctness(
                 completion_id[task_id] += 1
                 n_samples += 1
 
-        print(completion_id)
+        # print(completion_id)
         if len(completion_id) == len(problems):
             evaluate_pass_at_k = True
         else:
             evaluate_pass_at_k = False
 
-        print("Running test suites...")
+        print("Running test suites...", file=sys.stderr)
         for future in tqdm(as_completed(futures), total=len(futures)):
             result = future.result()
             results[result["task_id"]].append((result["completion_id"], result))
@@ -219,11 +221,13 @@ def evaluate_functional_correctness(
         pass_at_k = {f"pass@{k}": estimate_pass_at_k(total, correct, k).mean()
                      for k in ks if (total >= k).all()}
         print(pass_at_k)
+        with open(result_file, "w") as result_file:
+            print(pass_at_k, file=result_file)
     else:
-        print("Total:", np.sum(total))
-        print("Correct:", np.sum(correct))
+        print("Total:", np.sum(total), file=sys.stderr)
+        print("Correct:", np.sum(correct), file=sys.stderr)
 
-    print("Writing to: ", out_file)
+    print("Writing to: ", out_file, file=sys.stderr)
     if out_file.endswith(".gz"):
         fp = gzip.GzipFile(fileobj=open(out_file, "wb"), mode="wb")
         for res in results.values():
@@ -236,7 +240,7 @@ def evaluate_functional_correctness(
                 fp.write(json.dumps(r[1]) + "\n")
     fp.close()
 
-    print("Evaluation finished.")
+    print("Evaluation finished.", file=sys.stderr)
 
 
 def main():
