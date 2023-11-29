@@ -42,7 +42,7 @@ CMD="python $MAIN_DIR/codegeex/benchmark/humaneval-x/evaluate_humaneval_x.py \
     --tmp_dir $MAIN_DIR/codegeex/benchmark/humaneval-x/ \
     --problem_file $DATA_DIR \
     --timeout $TIMEOUT \
-    --drop-prompt"
+    --drop-prompt"  # To remove prompt from hypothesis if present
 
 echo "$CMD"
 eval "$CMD"

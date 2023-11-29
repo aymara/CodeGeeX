@@ -1,10 +1,10 @@
-import os
-import sys
-import fire
-import json
 import gzip
-import regex
+import json
 import numpy as np
+import os
+import regex
+import sys
+import typer
 
 from typing import *
 from tqdm.auto import tqdm
@@ -24,7 +24,8 @@ LANGUAGE_NAME = {
 }
 
 
-def process_humaneval_test(sample, problems, example_test=False):
+def process_humaneval_test(sample, problems, example_test=False, 
+                           drop_prompt: bool = False):
     task_id = sample["task_id"]
     language = task_id.split("/")[0].lower()
 
@@ -34,6 +35,8 @@ def process_humaneval_test(sample, problems, example_test=False):
     else:
         test = problems[task_id]["test"]
     code = sample["generation"]
+    if drop_prompt:
+        code = code.replace(sample["prompt"], "")
 
     # Pre-process for different languages
     if language == "python":
@@ -106,6 +109,7 @@ def evaluate_functional_correctness(
         k: List[int] = [1, 10, 100],
         test_groundtruth: bool = False,
         example_test: bool = False,
+        drop_prompt: bool = False,
 ):
     if example_test:
         print("Example test...")
@@ -148,7 +152,10 @@ def evaluate_functional_correctness(
                 if lang == "javascript":
                     lang = "js"
                 tmp_dir_ = os.path.join(tmp_dir, lang, "evaluation")
-                sample["generation"] = sample["canonical_solution"]
+                generation = sample["canonical_solution"]
+                if drop_prompt:
+                    generation = generation.replace(sample["prompt"], "")
+                sample["generation"] = generation
                 sample["test_code"] = process_humaneval_test(sample, problems, example_test)
                 if sample["test_code"] is None:
                     continue
@@ -174,7 +181,8 @@ def evaluate_functional_correctness(
                     lang = "js"
                 tmp_dir_ = os.path.join(tmp_dir, lang, "evaluation")
                 sample["task_id"] = task_id
-                sample["test_code"] = process_humaneval_test(sample, problems, example_test)
+                sample["test_code"] = process_humaneval_test(sample, problems, example_test, 
+                                                             drop_prompt=drop_prompt)
                 if sample["test_code"] is None:
                     continue
                 if "completion_id" in sample:
@@ -232,7 +240,7 @@ def evaluate_functional_correctness(
 
 
 def main():
-    fire.Fire(evaluate_functional_correctness)
+    return typer.run(evaluate_functional_correctness)
 
 
 if __name__ == "__main__":
