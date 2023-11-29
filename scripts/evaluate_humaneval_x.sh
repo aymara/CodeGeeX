@@ -37,10 +37,10 @@ if [ $LANGUAGE = cpp ]; then
 fi
 
 CMD="python $MAIN_DIR/codegeex/benchmark/humaneval-x/evaluate_humaneval_x.py \
-    --input_file "$INPUT_FILE" \
-    --n_workers $N_WORKERS \
-    --tmp_dir $MAIN_DIR/codegeex/benchmark/humaneval-x/ \
-    --problem_file $DATA_DIR \
+    --input-file "$INPUT_FILE" \
+    --n-workers $N_WORKERS \
+    --tmp-dir $MAIN_DIR/codegeex/benchmark/humaneval-x/ \
+    --problem-file $DATA_DIR \
     --timeout $TIMEOUT \
     --drop-prompt"  # To remove prompt from hypothesis if present
 
