@@ -21,6 +21,7 @@ setup(
         "tqdm>=4.63.0",
         "cpm_kernels",
         "deepspeed>0.6.1",
+        "typer>=0.9.0"
     ],
     entry_points={}
 )
