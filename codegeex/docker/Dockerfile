@@ -33,6 +33,8 @@ RUN curl -o /workspace/download/jdk.tar.gz -SL https://download.oracle.com/java/
     && mkdir /usr/java && tar -zxf /workspace/download/jdk.tar.gz -C /usr/java && rm /workspace/download/jdk.tar.gz \
     && java_path=`ls /usr/java/${path}` && echo "export JAVA_HOME=/usr/java/${java_path}" >> ~/.profile
 
+ARG CACHEBUST
+RUN echo "$CACHEBUST"
 RUN git clone https://github.com/aymara/CodeGeeX.git && pip install -e /workspace/CodeGeeX \
     && tar -zxf /workspace/CodeGeeX/codegeex/benchmark/humaneval-x/go/evaluation/vendor.tar.gz -C /workspace/CodeGeeX/codegeex/benchmark/humaneval-x/go/evaluation
 
