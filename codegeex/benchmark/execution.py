@@ -106,7 +106,7 @@ def check_correctness(
                 tmp_dir = os.path.join(tmp_dir, "tmp")
             tmp_dir = os.path.join(tmp_dir, f"{task_id.replace('/', '-')}-{random_id}")
             if not os.path.exists(tmp_dir):
-                os.makedirs(tmp_dir)
+                os.makedirs(tmp_dir, exist_ok=True)
 
             os.chdir(tmp_dir)
             open(f"main_test.go", 'w').write(sample["test_code"])
@@ -151,7 +151,7 @@ def check_correctness(
                 tmp_dir = os.path.join(tmp_dir, "tmp")
             tmp_dir = os.path.join(tmp_dir, f"{task_id.replace('/', '-')}-{random_id}")
             if not os.path.exists(tmp_dir):
-                os.makedirs(tmp_dir)
+                os.makedirs(tmp_dir, exist_ok=True)
 
             os.chdir(tmp_dir)
             open(f"test.js", 'w').write(sample["test_code"])
@@ -190,7 +190,7 @@ def check_correctness(
                 tmp_dir = os.path.join(tmp_dir, "tmp")
             tmp_dir = os.path.join(tmp_dir, f"{task_id.replace('/', '-')}-{random_id}")
             if not os.path.exists(tmp_dir):
-                os.makedirs(tmp_dir)
+                os.makedirs(tmp_dir, exist_ok=True)
 
             os.chdir(tmp_dir)
             open(f"test.cpp", 'w').write(sample["test_code"])
@@ -316,7 +316,7 @@ def check_correctness(
                 tmp_dir = os.path.join(tmp_dir, "tmp")
             tmp_dir = os.path.join(tmp_dir, f"{task_id.replace('/', '-')}-{random_id}")
             if not os.path.exists(tmp_dir):
-                os.makedirs(tmp_dir)
+                os.makedirs(tmp_dir, exist_ok=True)
 
             os.chdir(tmp_dir)
             open(os.path.join(tmp_dir, "Main.java"), 'w').write(sample["test_code"])

@@ -1,6 +1,8 @@
 #FROM pytorch/pytorch:1.11.0-cuda11.3-cudnn8-runtime
 FROM pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime
+
 ARG DEBIAN_FRONTEND=noninteractive
+
 RUN cp /etc/apt/sources.list /etc/apt/sources.list.bak \
     && sed -i "s@http://.*archive.ubuntu.com@https://mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list \
     && sed -i "s@http://.*security.ubuntu.com@https://mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list \
@@ -24,9 +26,11 @@ RUN apt-get install -y -qq build-essential && apt-get install -y -qq g++ \
     && tar -zxf /workspace/download/boost_1_83_0.tar.gz && rm /workspace/download/boost_1_83_0.tar.gz && cd boost_1_83_0 \
     && ./bootstrap.sh --prefix=/usr/ && ./b2 && ./b2 install \
     && cd .. && rm -r boost_1_83_0
+
 RUN curl -o /workspace/download/openssl.tar.gz -SL https://www.openssl.org/source/old/3.0/openssl-3.0.0.tar.gz \
     && tar -zxf /workspace/download/openssl.tar.gz && cd openssl-3.0.0 && ./Configure && make && make install \
     && rm /workspace/download/openssl.tar.gz && rm -r /workspace/openssl-3.0.0
+
 ENV PATH=/usr/bin/openssl:$PATH
 
 RUN curl -o /workspace/download/jdk.tar.gz -SL https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.tar.gz \
