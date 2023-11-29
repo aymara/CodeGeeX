@@ -67,14 +67,14 @@ jobs:
       - name: Build and push Docker image
         id: build-and-push
         # uses: docker/build-push-action@v2
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: "codegeex/docker/Dockerfile"
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: BRANCH=${{ github.ref_name }} --build-arg CACHEBUST=$(date +%s)
+          build-args: BRANCH=${{ github.ref_name }},CACHEBUST=$(date +%s)
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
