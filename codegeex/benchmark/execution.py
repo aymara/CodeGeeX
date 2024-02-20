@@ -10,6 +10,9 @@ import subprocess
 import tempfile
 import gzip
 import json
+import sys
+import traceback
+
 from typing import *
 
 def dicts_to_jsonl(data_list: list, filename: str, compress: bool = True) -> None:
@@ -53,7 +56,6 @@ def check_correctness(
     Evaluates the functional correctness of a completion by running the test
     suite provided in the problem.
     """
-
     def unsafe_execute(tmp_dir):
         random_id = random.uniform(1, 1000)
         if "python" in language_type.lower():
@@ -344,7 +346,8 @@ def check_correctness(
                     # does not perform destructive actions on their host or network.
                     # Once you have read this disclaimer and taken appropriate precautions,
                     # uncomment the following line and proceed at your own risk:
-                    # exec_result = subprocess.run([f'java', '-cp', tmp_dir, 'Main'], timeout=timeout, capture_output=True)
+                    exec_result = subprocess.run([f'java', '-cp', tmp_dir, 'Main'], timeout=timeout, capture_output=True)
+                    assert exec_result is not None, f"Java program has not been executed. Please uncomment the subprocess.run command above and run the evaluation in a sandboxed environment.\n{traceback.format_stack()}"
                     if exec_result.returncode == 0:
                         res = "passed"
                     elif exec_result.returncode == 1:
